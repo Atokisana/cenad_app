@@ -1,3 +1,4 @@
+cat > .github/workflows/build_apk.yml << 'EOF'
 name: Build CENAD APK
 on:
   push:
@@ -16,8 +17,9 @@ jobs:
           python-version: "3.10"
       - name: Install system dependencies
         run: |
+          sudo dpkg --add-architecture i386
           sudo apt-get update -qq
-          sudo apt-get install -y build-essential git zip unzip libssl-dev libffi-dev python3-dev openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
+          sudo apt-get install -y build-essential git zip unzip libssl-dev libffi-dev python3-dev openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libc6:i386 libstdc++6:i386 lib32z1
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
@@ -44,3 +46,4 @@ jobs:
         with:
           name: build-log
           path: build.log
+EOF
