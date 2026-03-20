@@ -59,20 +59,20 @@ ETABLISSEMENTS = [
     },
     {
         "nom": "DEGSP",
-        "complet": "Département d'Économie, Gestion et Sciences Politiques",
-        "mission": "Former des économistes, gestionnaires et politologues.",
-        "mentions": ["Économie", "Gestion", "Finance", "Sciences Politiques"],
+        "complet": "Droit, Economie, Gestion et Science Politique",
+        "mission": "Former des juristes, economistes, gestionnaires et politologues.",
+        "mentions": ["Droit", "Economie", "Gestion", "Finance", "Sciences Politiques"],
         "parcours": ["Licence", "Master"],
         "description": "Le DEGSP répond aux besoins du secteur économique régional en formant des cadres compétents en gestion et en développement économique.",
         "color": "#F57F17"
     },
     {
         "nom": "ISAE",
-        "complet": "Institut Supérieur d'Architecture et d'Environnement",
-        "mission": "Former des architectes et urbanistes responsables.",
-        "mentions": ["Architecture", "Urbanisme", "Environnement"],
-        "parcours": ["Licence", "Master Architecture"],
-        "description": "L'ISAE forme des professionnels de l'architecture et de l'urbanisme, intégrant les enjeux environnementaux contemporains.",
+        "complet": "Institut Superieur d'Administration et d'Entreprise",
+        "mission": "Former des cadres en administration et gestion d'entreprise.",
+        "mentions": ["Administration", "Gestion", "Management", "Commerce"],
+        "parcours": ["Licence", "Master Administration"],
+        "description": "L'ISAE forme des cadres competents en administration publique et en gestion d'entreprise pour repondre aux besoins du secteur economique regional.",
         "color": "#6A1B9A"
     },
     {
@@ -86,11 +86,11 @@ ETABLISSEMENTS = [
     },
     {
         "nom": "ISISFA",
-        "complet": "Institut Supérieur d'Informatique, Sciences Fondamentales et Appliquées",
-        "mission": "Former des informaticiens et scientifiques de haut niveau.",
-        "mentions": ["Informatique", "Mathématiques Appliquées", "Intelligence Artificielle"],
-        "parcours": ["Licence", "Master Informatique"],
-        "description": "L'ISISFA est spécialisé dans l'informatique et les sciences fondamentales, avec une orientation vers les technologies émergentes.",
+        "complet": "Institut Superieur de l'Infirmier et Sage Femme d'Antsiranana",
+        "mission": "Former des infirmiers et sages-femmes qualifies pour la sante publique.",
+        "mentions": ["Soins Infirmiers", "Sage-Femme", "Sante Publique"],
+        "parcours": ["Licence en Soins Infirmiers", "Licence Sage-Femme"],
+        "description": "L'ISISFA forme des professionnels de sante, notamment des infirmiers et sages-femmes, indispensables au systeme de sante de la region Nord de Madagascar.",
         "color": "#1565C0"
     },
 ]
@@ -116,7 +116,7 @@ class EtablissementsScreen(Screen):
                           background_color=(0.2, 0.3, 0.7, 1), background_normal='')
         back_btn.bind(on_release=lambda x: setattr(self.manager, 'current', 'accueil'))
         header.add_widget(back_btn)
-        header.add_widget(Label(text="[b][Etab] ÉTABLISSEMENTS UNIVERSITAIRES[/b]",
+        header.add_widget(Label(text="[b]🏛 ÉTABLISSEMENTS UNIVERSITAIRES[/b]",
                                  markup=True, font_size=dp(13), color=(1, 0.85, 0.1, 1)))
         main.add_widget(header)
 
@@ -189,12 +189,12 @@ class EtabCard(BoxLayout):
             body.add_widget(lbl)
             return lbl
 
-        mission_lbl = add_row("Objectif:", etab['mission'], (1, 0.9, 0.6, 1))
-        desc_lbl = add_row("Info:", etab['description'])
+        mission_lbl = add_row("🎯", etab['mission'], (1, 0.9, 0.6, 1))
+        desc_lbl = add_row("ℹ", etab['description'])
         mentions_str = " • ".join(etab['mentions'])
-        add_row("Cours:", f"Mentions : {mentions_str}")
+        add_row("📚", f"Mentions : {mentions_str}")
         parcours_str = " | ".join(etab['parcours'])
-        add_row("Parcours:", f"Parcours : {parcours_str}", (0.7, 1, 0.7, 1))
+        add_row("🎓", f"Parcours : {parcours_str}", (0.7, 1, 0.7, 1))
 
         # Hauteur dynamique
         def update_body_height(*a):

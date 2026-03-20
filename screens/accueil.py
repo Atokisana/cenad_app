@@ -11,6 +11,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
+from kivy.uix.behaviors import ButtonBehavior
 from kivy.graphics import Color, Rectangle, RoundedRectangle, Line
 from kivy.metrics import dp
 from kivy.animation import Animation
@@ -47,7 +48,14 @@ ICON_COLORS = [
     (0.65, 0.75, 0.85, 1),   # gris-bleu
 ]
 
-ICON_SYMBOLS = ["#", "B", "P", "H", "U", "A"]
+ICON_FILES = [
+    'ic_dashboard.png',
+    'ic_batiment.png',
+    'ic_promotion.png',
+    'ic_historique.png',
+    'ic_etablissement.png',
+    'ic_admin.png',
+]
 
 
 class AccueilScreen(Screen):
@@ -161,7 +169,7 @@ class AccueilScreen(Screen):
                 label_text=text,
                 screen_name=screen_name,
                 bg_color=bg_color,
-                icon_char=ICON_SYMBOLS[i],
+                icon_file=ICON_FILES[i],
                 icon_color=ICON_COLORS[i],
             )
             btn.bind(on_release=self._navigate)
@@ -193,7 +201,7 @@ class AccueilScreen(Screen):
         self.root_layout.add_widget(self.overlay)
 
         # ── PANNEAU MENU LATERAL ──
-        self.side_menu = SideMenuPanel(nav_items=NAV_ITEMS, icon_symbols=ICON_SYMBOLS,
+        self.side_menu = SideMenuPanel(nav_items=NAV_ITEMS, icon_symbols=ICON_FILES,
                                        icon_colors=ICON_COLORS,
                                        navigate_cb=self._navigate_from_menu,
                                        close_cb=self._close_menu)
@@ -272,8 +280,8 @@ class HamburgerButton(Button):
 
 
 # ── BOUTON ICONE + TEXTE ──
-class IconTextButton(BoxLayout):
-    def __init__(self, label_text, screen_name, bg_color, icon_char, icon_color, **kwargs):
+class IconTextButton(ButtonBehavior, BoxLayout):
+    def __init__(self, label_text, screen_name, bg_color, icon_file, icon_color, **kwargs):
         super().__init__(
             orientation='horizontal',
             size_hint_y=None,
@@ -283,7 +291,6 @@ class IconTextButton(BoxLayout):
         )
         self.screen_name = screen_name
         self._bg_color = bg_color
-        self._pressed = False
 
         with self.canvas.before:
             self._color_inst = Color(*bg_color)
@@ -302,12 +309,17 @@ class IconTextButton(BoxLayout):
         icon_box.bind(size=lambda *a: setattr(self._icon_rect, 'size', icon_box.size),
                       pos=lambda *a: setattr(self._icon_rect, 'pos', icon_box.pos))
 
-        icon_lbl = Label(
-            text="[b]{}[/b]".format(icon_char), markup=True,
-            font_size=dp(20), color=(1, 1, 1, 1),
-            halign='center', valign='middle'
-        )
-        icon_box.add_widget(icon_lbl)
+        icon_path = get_asset_path('icons/' + icon_file)
+        if os.path.exists(icon_path):
+            icon_img = Image(source=icon_path, size_hint=(None, None),
+                             size=(dp(36), dp(36)),
+                             pos_hint={'center_x': 0.5, 'center_y': 0.5},
+                             allow_stretch=True, keep_ratio=True)
+            icon_box.add_widget(icon_img)
+        else:
+            icon_box.add_widget(Label(text=icon_file[3:4].upper(),
+                                      font_size=dp(20), color=(1,1,1,1),
+                                      halign='center'))
         self.add_widget(icon_box)
 
         # Texte
@@ -327,29 +339,11 @@ class IconTextButton(BoxLayout):
             size_hint=(None, 1), width=dp(32)
         ))
 
-    def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
-            self._color_inst.a = 0.7
-            self._pressed = True
-            return True
-        return super().on_touch_down(touch)
-
-    def on_touch_up(self, touch):
-        if self._pressed:
-            self._color_inst.a = 1.0
-            self._pressed = False
-            if self.collide_point(*touch.pos):
-                for cb in self.get_root_window()._touches:
-                    pass
-                self.dispatch('on_release')
-            return True
-        return super().on_touch_up(touch)
+    def on_press(self):
+        self._color_inst.a = 0.7
 
     def on_release(self):
-        pass
-
-    def register_event_type(self, *args):
-        pass
+        self._color_inst.a = 1.0
 
 
 # ── PANNEAU LATERAL ──
@@ -408,7 +402,7 @@ class SideMenuPanel(BoxLayout):
         for i, (text, screen_name, bg_color) in enumerate(nav_items):
             item = SideMenuItem(
                 text=text, screen_name=screen_name,
-                icon_char=icon_symbols[i], icon_color=icon_colors[i],
+                icon_file=icon_symbols[i], icon_color=icon_colors[i],
                 bg_color=bg_color,
                 on_press_cb=navigate_cb
             )
@@ -427,7 +421,7 @@ class SideMenuPanel(BoxLayout):
 
 
 class SideMenuItem(BoxLayout):
-    def __init__(self, text, screen_name, icon_char, icon_color, bg_color, on_press_cb, **kwargs):
+    def __init__(self, text, screen_name, icon_file, icon_color, bg_color, on_press_cb, **kwargs):
         super().__init__(
             orientation='horizontal',
             size_hint_y=None, height=dp(54),
@@ -452,11 +446,20 @@ class SideMenuItem(BoxLayout):
         self.add_widget(bar)
 
         # Icone
-        self.add_widget(Label(
-            text="[b]{}[/b]".format(icon_char), markup=True,
-            font_size=dp(16), color=list(icon_color[:3]) + [1],
-            size_hint=(None, 1), width=dp(44), halign='center'
-        ))
+        icon_path = get_asset_path('icons/' + icon_file)
+        if os.path.exists(icon_path):
+            icon_wrap = BoxLayout(size_hint=(None, 1), width=dp(44))
+            icon_wrap.add_widget(Image(
+                source=icon_path,
+                size_hint=(None, None), size=(dp(30), dp(30)),
+                pos_hint={'center_x': 0.5, 'center_y': 0.5},
+                allow_stretch=True, keep_ratio=True
+            ))
+            self.add_widget(icon_wrap)
+        else:
+            self.add_widget(Label(text=icon_file[3:4].upper(),
+                                   font_size=dp(16), color=list(icon_color[:3])+[1],
+                                   size_hint=(None,1), width=dp(44)))
 
         # Texte
         lbl = Label(text=text, markup=True, font_size=dp(12),

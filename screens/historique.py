@@ -12,14 +12,17 @@ from kivy.metrics import dp
 
 
 PRESIDENTS = [
-    ("RAKOTO Andriamanana", "2012 – 2013", "Fondateur et premier président. Mise en place des statuts."),
-    ("RABE Tahina", "2013 – 2014", "Développement du réseau d'entraide entre membres."),
-    ("ANDRIAMAMPIANINA Solo", "2014 – 2015", "Organisation des premières activités socioculturelles."),
-    ("RAZAFY Narindra", "2015 – 2016", "Renforcement des partenariats avec les établissements."),
-    ("RAKOTONDRABE Fidy", "2016 – 2018", "Expansion du nombre de membres et digitalisation."),
-    ("RANDRIAMANANTENA Vola", "2018 – 2020", "Lancement des activités sportives et académiques."),
-    ("ANDRIANTSOA Jean", "2020 – 2022", "Gestion de la période COVID-19, résilience associative."),
-    ("RAKOTOMALALA Henintsoa", "2022 – présent", "Modernisation et vision stratégique 2024–2026."),
+    ("", "2012 – 2013", ""),
+    ("", "2013 – 2014", ""),
+    ("", "2014 – 2015", ""),
+    ("", "2015 – 2016", ""),
+    ("", "2016 – 2018", ""),
+    ("", "2018 – 2020", ""),
+    ("JIMMY Richard", "2020 – 2022", "Gestion de la periode COVID-19, resilience associative."),
+    ("", "2022 – 2023", ""),
+    ("RALAHADY Fanios", "2023 – 2024", ""),
+    ("Mysco Flobert", "2024 – 2025", ""),
+    ("BEVITA Casmir", "2025 – present", ""),
 ]
 
 HISTORIQUE_TEXT = """
@@ -72,7 +75,7 @@ class HistoriqueScreen(Screen):
         content.bind(minimum_height=content.setter('height'))
 
         # Date fondation
-        self._add_section_card(content, "[Date] Fondée en 2012",
+        self._add_section_card(content, "📅 Fondée en 2012",
                                 "Antsiranana, Madagascar", "#1565C0")
 
         # Texte historique
@@ -90,7 +93,7 @@ class HistoriqueScreen(Screen):
 
         # Présidents
         pres_title = Label(
-            text="[b][Presidents] PRÉSIDENTS SUCCESSIFS[/b]", markup=True,
+            text="[b]👑 PRÉSIDENTS SUCCESSIFS[/b]", markup=True,
             font_size=dp(14), color=(1, 0.85, 0.1, 1),
             size_hint_y=None, height=dp(40)
         )
@@ -128,15 +131,17 @@ class HistoriqueScreen(Screen):
         card.bind(size=lambda *a: setattr(rect, 'size', card.size),
                   pos=lambda *a: setattr(rect, 'pos', card.pos))
 
-        card.add_widget(Label(text=f"[b]{nom}[/b]", markup=True, font_size=dp(13),
-                               color=(1, 0.85, 0.1, 1), halign='left',
+        nom_affiche = nom if nom else "( Inconnu )"
+        couleur_nom = (1, 0.85, 0.1, 1) if nom else (0.5, 0.6, 0.7, 0.7)
+        card.add_widget(Label(text=f"[b]{nom_affiche}[/b]", markup=True, font_size=dp(13),
+                               color=couleur_nom, halign='left',
                                size_hint_y=None, height=dp(22),
                                text_size=(dp(280), None)))
         card.add_widget(Label(text=f"Date: {annees}", font_size=dp(11),
                                color=(0.6, 0.8, 1, 1), halign='left',
                                size_hint_y=None, height=dp(18),
                                text_size=(dp(280), None)))
-        mission_lbl = Label(text=mission, font_size=dp(11),
+        mission_lbl = Label(text=mission if mission else "", font_size=dp(11),
                              color=(0.75, 0.85, 1, 0.85), halign='left',
                              text_size=(None, None), size_hint_y=None)
         mission_lbl.bind(

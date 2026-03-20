@@ -5,7 +5,7 @@ package.domain = org.cenad
 
 source.dir = .
 source.include_exts = py,kv,png,jpg,sqlite,db,csv,json
-source.include_patterns = assets/*,data/*,screens/*
+source.include_patterns = assets/*,assets/icons/*,data/*,screens/*
 
 version = 1.0.0
 
@@ -25,8 +25,8 @@ android.archs = armeabi-v7a
 
 android.release_artifact = apk
 
-android.icon.filename = %(source.dir)s/assets/cenad.png
-android.presplash.filename = %(source.dir)s/assets/cenad.png
+android.icon.filename = %(source.dir)s/assets/cenad_icon.png
+android.presplash.filename = %(source.dir)s/assets/cenad_icon.png
 android.presplash_color = #0D1640
 
 android.wakelock = False
